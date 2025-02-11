@@ -1,0 +1,26 @@
+{% extends "order_management/base.html" %}
+
+{% block title %}Order management{% endblock %}
+
+{% block content %}
+    {% for order in orders %}
+        <h2>Order №{{ order.id }} - Table №{{ order.table_number }}</h2>
+        <p class="status">
+            Status: {{ order.get_status_display }}
+        </p>
+        <p class="items">
+            {% for item in order.items.all %}
+                <li>
+                    {{ item.name }} — {{ item.price }}
+                </li>
+            {% endfor %}
+        </p>
+        <p class="total_price">
+            Total price: {{ order.total_price }}
+        </p>
+        <p class="date">
+            Created {{ order.created_at }}
+        </p>
+    {% endfor %}
+    {% include "order_management/pagination.html" with page=page_obj %}
+{% endblock %}

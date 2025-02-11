@@ -1,0 +1,18 @@
+{% load static %}
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>{% block title %}{% endblock %}</title>
+        <link href="{% static 'order_management/ordder_management.css' %}" rel="stylesheet">
+    </head>
+
+    <body>
+        <div id="content">
+            {% block content %}
+            {% endblock %}
+        </div>
+        <div id="sidebar">
+            <h2>Order management</h2>
+        </div>
+    </body>
+</html>
