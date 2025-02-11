@@ -8,6 +8,12 @@ class Order(models.Model):
         PENDING = "PE", "Pending"
         READY = "RE", "Ready"
         PAID = "PA", "Paid"
+    
+    class Meta():
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['-created_at'])
+        ]
 
     table_number = models.PositiveSmallIntegerField(verbose_name="Table number")
     status = models.CharField(
@@ -23,6 +29,9 @@ class Order(models.Model):
         default=0,
         verbose_name="Total price"
     )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def update_total_price(self):
         """Recalculates the total order value and saves it."""
