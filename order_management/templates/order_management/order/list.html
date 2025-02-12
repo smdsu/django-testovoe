@@ -14,11 +14,13 @@
         </p>
         <p class="items">
             Items:
-            {% for item in order.items.all|slice:":5" %}
-                <li>
-                    {{ item.name }} — {{ item.price }}
-                </li>
-            {% endfor %}
+            <ul>
+                {% for order_item in order.orderitem_set.all %}
+                    <li>
+                        {{ order_item.item.name }} — {{ order_item.item.price }} x {{ order_item.quantity }}
+                    </li>
+                {% endfor %}
+            </ul>
         </p>
         <p class="total_price">
             Total price: {{ order.total_price }}
