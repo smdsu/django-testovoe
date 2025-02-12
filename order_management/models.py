@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models import Sum, F
+from django.urls import reverse
 
 
 class Item(models.Model):
@@ -55,6 +56,14 @@ class Order(models.Model):
     
     def __str__(self):
         return f"Order {self.id} — Table {self.table_number}"
+    
+    def get_abs_url(self):
+        return reverse(
+            'orders:order_detail',
+            args=[
+                self.id
+            ]
+        )
 
 
 class OrderItem(models.Model):
