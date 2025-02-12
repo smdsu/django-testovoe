@@ -1,0 +1,24 @@
+{% extends "order_management/base.html" %}
+
+{% block title %}{{ order.id }}{% endblock %}
+
+{% block content %}
+    <h1>Order №{{ order.id }} - Table №{{ order.table_number }}</h1>
+    <p class="status">
+        Status: {{ order.get_status_display }}
+    </p>
+    <p class="items">
+        Items:
+        {% for item in order.items.all %}
+            <li>
+                {{ item.name }} — {{ item.price }}
+            </li>
+        {% endfor %}
+    </p>
+    <p class="total_price">
+        Total price: {{ order.total_price }}
+    </p>
+    <p class="date">
+        Created {{ order.created_at }}
+    </p>
+{% endblock %}

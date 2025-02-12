@@ -8,3 +8,7 @@ class OrderListView(ListView):
     context_object_name = 'orders'
     paginate_by = 10
     template_name = 'order_management/order/list.html'
+
+class OrderDetailView(DetailView):
+    model = Order
+    template_name = 'order_management/order/detail.html'
