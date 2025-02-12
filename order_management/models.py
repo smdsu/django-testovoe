@@ -95,4 +95,3 @@ class OrderItem(models.Model):
     
     def __str__(self):
         return f"{self.quantity} x {self.item.price} for order {self.order.id}"
-
