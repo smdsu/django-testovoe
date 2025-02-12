@@ -1,0 +1,57 @@
+{% extends "order_management/base.html" %}
+
+{% block title %}Create order{% endblock %}
+
+{% block content %}
+    <h1>Create order</h1>
+    <form method="post">
+        {% csrf_token %}
+
+        <fieldset>
+            <legend>Order info</legend>
+            {{ form.as_p }}
+        </fieldset>
+
+        <fieldset>
+            <legend>Items</legend>
+            {{ formset.management_form }}
+            {% for form in formset %}
+                <div class="order-item-form">
+                    {{ form.as_p }}
+                </div>
+            {% endfor %}
+            <button type="button" id="add-item">Add item</button>
+        </fieldset>
+
+        <button type="submit">Add order</button>
+    </form>
+    
+    <!-- JavaScript сгенерирован нейросетью -->
+    <script>
+        document.getElementById('add-item').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Получаем все блоки формы для элементов заказа
+            const forms = document.querySelectorAll('.order-item-form');
+            // Последняя форма — это шаблон для клонирования
+            const lastForm = forms[forms.length - 1];
+            const newForm = lastForm.cloneNode(true);
+            
+            // Получаем скрытое поле, которое отслеживает общее число форм
+            const totalFormsInput = document.querySelector('input[name="orderitem_set-TOTAL_FORMS"]');
+            let totalForms = parseInt(totalFormsInput.value, 10);
+            
+            // Обновляем номера индексов в клонированной форме:
+            // Заменяем все вхождения 'orderitem_set-<старый индекс>-' на 'orderitem_set-<новый индекс>-'
+            newForm.innerHTML = newForm.innerHTML.replace(/orderitem_set-(\d+)-/g, 'orderitem_set-' + totalForms + '-');
+            
+            // Увеличиваем значение TOTAL_FORMS
+            totalForms++;
+            totalFormsInput.value = totalForms;
+            
+            // Вставляем новую форму перед кнопкой "Добавить блюдо"
+            const addButton = document.getElementById('add-item');
+            addButton.parentNode.insertBefore(newForm, addButton);
+        });
+        </script>
+{% endblock %}
