@@ -12,7 +12,13 @@
             {% endblock %}
         </div>
         <div id="sidebar">
-            <h2>Order management</h2>
+            <h2>
+                <a href="{% url 'orders:order_list' %}">
+                    Order management
+                </a>
+            </h2>
+            {% block sidebar %}
+            {% endblock %}
         </div>
     </body>
 </html>

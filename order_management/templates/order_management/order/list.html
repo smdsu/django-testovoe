@@ -4,12 +4,17 @@
 
 {% block content %}
     {% for order in orders %}
-        <h2>Order №{{ order.id }} - Table №{{ order.table_number }}</h2>
+        <h2>
+            <a href="{{ order.get_abs_url }}">
+                Order №{{ order.id }} - Table №{{ order.table_number }}
+            </a>
+        </h2>
         <p class="status">
             Status: {{ order.get_status_display }}
         </p>
         <p class="items">
-            {% for item in order.items.all %}
+            Items:
+            {% for item in order.items.all|slice:":5" %}
                 <li>
                     {{ item.name }} — {{ item.price }}
                 </li>
@@ -23,4 +28,8 @@
         </p>
     {% endfor %}
     {% include "order_management/pagination.html" with page=page_obj %}
+{% endblock %}
+
+{% block sidebar %}
+    <a href="" class="btn btn-primary">Add order</a>
 {% endblock %}
