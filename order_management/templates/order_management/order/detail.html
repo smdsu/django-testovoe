@@ -4,9 +4,7 @@
 
 {% block content %}
     <h1>Order №{{ order.id }} - Table №{{ order.table_number }}</h1>
-    <p class="status">
-        Status: {{ order.get_status_display }}
-    </p>
+    {% include "order_management/status_select.html" %}
     <p class="items">
         Items:
         <ul>
@@ -23,5 +21,9 @@
     <p class="date">
         Created {{ order.created_at }}
     </p>
-    <a href="{% url 'orders:order_delete' order.id %}">Delete</a>
+{% endblock %}
+
+{% block sidebar %}
+    <a href="{% url 'orders:edit_order' order.id %}" class="btn btn-primary">Update order</a>
+    <a href="{% url 'orders:order_delete' order.id %}" class="btn btn-primary">Delete</a>
 {% endblock %}

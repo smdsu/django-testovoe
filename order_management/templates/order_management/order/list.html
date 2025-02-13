@@ -14,7 +14,7 @@
             </a>
         </h2>
         <p class="status">
-            Status: {{ order.get_status_display }}
+            {% include "order_management/status_select.html" %}
         </p>
         <p class="items">
             Items:

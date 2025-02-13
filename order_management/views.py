@@ -1,7 +1,9 @@
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import DeleteView, DetailView
+from django.views.decorators.http import require_POST
+
 from django.urls import reverse_lazy
 
 from .models import Order
@@ -48,6 +50,30 @@ def create_order(request):
     return render(request, 'order_management/order/add.html', context)
 
 
+def edit_order(request, pk):
+    order = get_object_or_404(Order, id=pk)
+
+    if request.method == 'POST':
+        form = OrderAddForm(request.POST, instance=order)
+        formset = OrderItemFormSet(request.POST, instance=order)
+
+        if form.is_valid() and formset.is_valid():
+            form.save()
+            formset.save()
+            return redirect(order.get_abs_url())
+
+    else:
+        form = OrderAddForm(instance=order)
+        formset = OrderItemFormSet(instance=order)
+
+    context = {
+        'form': form,
+        'formset': formset,
+        'order': order,
+    }
+    return render(request, 'order_management/order/add.html', context)
+
+
 def orders_list(request):
     orders_list = Order.objects.all()
 
@@ -84,3 +110,16 @@ def orders_list(request):
     }
 
     return render(request, 'order_management/order/list.html', context)
+
+@require_POST
+def update_status(request, pk):
+    order = get_object_or_404(Order, id=pk)
+    new_status = request.POST.get('status')
+
+    valid_statuses = [choice[0] for choice in Order.Status.choices]
+
+    if new_status in valid_statuses:
+        order.status = new_status
+        order.save()
+
+    return redirect(order.get_abs_url())
