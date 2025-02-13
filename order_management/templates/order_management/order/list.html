@@ -3,6 +3,11 @@
 {% block title %}Order management{% endblock %}
 
 {% block content %}
+    <h1>Status filters</h1>
+    <a href="{% url 'orders:order_list' %}">All</a> —
+    <a href="{% url 'orders:order_list' %}PE">Pending</a> —
+    <a href="{% url 'orders:order_list' %}RE">Ready</a> —
+    <a href="{% url 'orders:order_list' %}PA">Paid</a>
     {% for order in orders %}
         <h2>
             <a href="{{ order.get_abs_url }}">
@@ -29,7 +34,7 @@
             Created {{ order.created_at }}
         </p>
     {% endfor %}
-    {% include "order_management/pagination.html" with page=page_obj %}
+    {% include "order_management/pagination.html" with page=orders %}
 {% endblock %}
 
 {% block sidebar %}
