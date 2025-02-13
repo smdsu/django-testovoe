@@ -23,4 +23,5 @@
     <p class="date">
         Created {{ order.created_at }}
     </p>
+    <a href="{% url 'orders:order_delete' order.id %}">Delete</a>
 {% endblock %}

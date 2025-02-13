@@ -3,11 +3,10 @@
 {% block title %}Order management{% endblock %}
 
 {% block content %}
-    <h1>Status filters</h1>
-    <a href="{% url 'orders:order_list' %}">All</a> —
-    <a href="{% url 'orders:order_list' %}PE">Pending</a> —
-    <a href="{% url 'orders:order_list' %}RE">Ready</a> —
-    <a href="{% url 'orders:order_list' %}PA">Paid</a>
+    <form method="get" action="">
+        <input type="text" name="q" placeholder="Search table..." value="{{ query }}">
+        <button type="submit">Search</button>
+    </form>
     {% for order in orders %}
         <h2>
             <a href="{{ order.get_abs_url }}">
@@ -33,6 +32,8 @@
         <p class="date">
             Created {{ order.created_at }}
         </p>
+    {% empty %}
+        <p>No orders found.</p>
     {% endfor %}
     {% include "order_management/pagination.html" with page=orders %}
 {% endblock %}

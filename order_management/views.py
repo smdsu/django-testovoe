@@ -1,10 +1,23 @@
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.db.models import Q
 from django.shortcuts import render, redirect
-from django.views.generic import ListView, DetailView
+from django.views.generic import DeleteView, DetailView
+from django.urls import reverse_lazy
 
 from .models import Order
 from .forms import OrderAddForm, OrderItemFormSet
 
+
+status_mapping = {
+    'pending': Order.Status.PENDING,
+    'ready': Order.Status.READY,
+    'paid': Order.Status.PAID,
+}
+
+class OrderDeleteView(DeleteView):
+    model = Order
+    template_name = 'order_management/order/confirm_delete.html'
+    success_url = reverse_lazy('orders:order_list')
 
 class OrderDetailView(DetailView):
     model = Order
@@ -35,11 +48,25 @@ def create_order(request):
     return render(request, 'order_management/order/add.html', context)
 
 
-def orders_list(request, status: str = None):
-    if status:
-        orders_list = Order.objects.filter(status=status)
-    else:
-        orders_list = Order.objects.all()
+def orders_list(request):
+    orders_list = Order.objects.all()
+
+    query = request.GET.get('q', '').strip()
+    if query:
+        if query.isdigit():
+            orders_list = orders_list.filter(
+                Q(table_number=query)
+            )
+        else:
+            code = status_mapping.get(query.lower())
+            if code:
+                orders_list = orders_list.filter(
+                    Q(status=code)
+                )
+            else:
+                orders_list = orders_list.filter(
+                    Q(status=query.upper())
+                )
     
     paginator = Paginator(orders_list, 5)
     page_number = request.GET.get('page', 1)
@@ -53,6 +80,7 @@ def orders_list(request, status: str = None):
 
     context = {
         'orders': orders,
+        'query': query,
     }
 
     return render(request, 'order_management/order/list.html', context)

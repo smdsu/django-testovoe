@@ -1,0 +1,12 @@
+{% extends "order_management/base.html" %}
+
+{% block content %}
+    <h1>Order delete {{order.id}}</h1>
+    <p>Do you really want to delete the order for table {{ object.table_number }}?</p>
+    
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Delete</button>
+        <a href="{% url 'orders:order_list' %}">Cancel</a>
+    </form>
+{% endblock %}
