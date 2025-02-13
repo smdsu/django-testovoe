@@ -64,6 +64,12 @@ class Order(models.Model):
                 self.id
             ]
         )
+    
+    def delete(self, *args, **kwargs):
+        if self.status not in ["RE", "PA"]:
+            super().delete(*args, **kwargs)
+        else:
+            raise ValueError("You cannot modify an order with a status of 'Ready' or 'Paid'.")
 
 
 class OrderItem(models.Model):
