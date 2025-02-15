@@ -1,5 +1,5 @@
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import DeleteView, DetailView
 from django.views.decorators.http import require_POST
@@ -9,6 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 
 from django.urls import reverse_lazy
+from django.utils import timezone
 
 from .models import Order
 from .forms import OrderAddForm, OrderItemFormSet
@@ -142,3 +143,18 @@ def update_status(request, pk):
         order.save()
 
     return redirect(order.get_abs_url())
+
+@login_required
+@user_passes_test(is_cafe_staff)
+def get_revenue(request):
+    today = timezone.now().date()
+
+    orders = Order.objects.filter(status="PA", created_at__date=today)
+
+    total_revenue = orders.aggregate(total=Sum('total_price'))['total'] or 0
+
+    context = {
+        'total_revenue': total_revenue,
+    }
+
+    return render(request, 'accounting/total_revenue.html', context)
