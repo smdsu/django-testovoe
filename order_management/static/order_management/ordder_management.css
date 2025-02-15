@@ -181,19 +181,34 @@ p.date::after {
 }
 
 .btn {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #585858;
+    background: linear-gradient(135deg, #4d4d4d, #585858);
     color: #fff;
-    font-size: 16px;
-    text-align: center;
-    text-decoration: none;
     border: none;
-    border-radius: 4px;
+    padding: 10px 20px;
+    font-size: 14px;
+    text-transform: uppercase;
+    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background 0.3s;
 }
 
 .btn:hover {
     background-color: #383838;
+}
+
+button.logout {
+    background: #612929;
+    margin-bottom: 10px;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    text-transform: uppercase;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+button.logout:hover {
+    background: linear-gradient(135deg, #863d3d, #8f4040);
 }
