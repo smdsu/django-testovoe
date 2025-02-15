@@ -4,6 +4,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import DeleteView, DetailView
 from django.views.decorators.http import require_POST
 
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+
+
 from django.urls import reverse_lazy
 
 from .models import Order
@@ -16,16 +20,25 @@ status_mapping = {
     'paid': Order.Status.PAID,
 }
 
-class OrderDeleteView(DeleteView):
+def is_cafe_staff(user):
+    return user.is_authenticated and user.groups.filter(name="cafe_staff").exists()
+
+class CafeStaffRequiredMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.is_authenticated and self.request.user.groups.filter(name="cafe_staff").exists()
+
+class OrderDeleteView(LoginRequiredMixin, CafeStaffRequiredMixin, DeleteView):
     model = Order
     template_name = 'order_management/order/confirm_delete.html'
     success_url = reverse_lazy('orders:order_list')
 
-class OrderDetailView(DetailView):
+class OrderDetailView(LoginRequiredMixin, CafeStaffRequiredMixin, DetailView):
     model = Order
     template_name = 'order_management/order/detail.html'
 
 
+@login_required
+@user_passes_test(is_cafe_staff)
 def create_order(request):
     if request.method == 'POST':
         form = OrderAddForm(request.POST)
@@ -50,6 +63,8 @@ def create_order(request):
     return render(request, 'order_management/order/add.html', context)
 
 
+@login_required
+@user_passes_test(is_cafe_staff)
 def edit_order(request, pk):
     order = get_object_or_404(Order, id=pk)
 
@@ -74,6 +89,8 @@ def edit_order(request, pk):
     return render(request, 'order_management/order/add.html', context)
 
 
+@login_required
+@user_passes_test(is_cafe_staff)
 def orders_list(request):
     orders_list = Order.objects.all()
 
@@ -111,6 +128,8 @@ def orders_list(request):
 
     return render(request, 'order_management/order/list.html', context)
 
+@login_required
+@user_passes_test(is_cafe_staff)
 @require_POST
 def update_status(request, pk):
     order = get_object_or_404(Order, id=pk)
